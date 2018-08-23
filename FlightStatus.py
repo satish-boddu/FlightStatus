@@ -83,7 +83,7 @@ def api_url_generator(host, appID, apiKey):
 			os.system('clear')
 			api_url_generator(host, appID, apiKey)
 		else:
-			return 'https://api.flightstats.com/flex/flightstatus/rest/v2/json/flight/status/UFO/109090/arr/5000/50/50?appId=c0108d04&appKey=a05ff275a408df68c013da1bc00d4046&utc=false'
+			return ""
 
 
 
@@ -318,51 +318,56 @@ def airport_data_salvager(data):
 
 def airlines_data_salvager(data):
 	airlines_path = 'Data/airlines.json'
-	airlines = data['appendix']['airlines']
-	counter = 0
-	new_airports = []
-	for airport in airports:
-		del_fields = ['iata', 'icao', 'localTime', 'classification', 'active', 'delayIndexUrl', 'weatherUrl']
-		for field in del_fields:
-			try:
-				airport.pop(field)
-			except KeyError:
-				pass
-		airport_name = airport['fs'] + ' - ' + airport['name'] + ' - ' + airport['city']
-		airport['airport'] = airport_name
+	try:
+		airlines = data['appendix']['airlines']
+	except KeyError:
+		pass
 
-		if os.path.exists(airports_path):
-			airports_data = json.load(open(airports_path, 'r'))
-			if airport not in airports_data:
-				airports_data.append(airport)
-				counter += 1
-				new_airports.append(airport['fs'] + ' - ' + airport['city'])
-			with open(airports_path, "w") as ports_json:
-				json.dump(airports_data, ports_json)
-			
-			
-		else:
-			airports_data = []
-			if airport not in airports_data:
-				airports_data.append(airport)
-				counter += 1
-				new_airports.append(airport['fs'] + ' - ' + airport['city'])
-			with open(airports_path, "w") as ports_json:
-				json.dump(airports_data, ports_json)
-			
-
-	if counter > 1:
-		print (counter, " New airports have been saved to the local storage. They are: ")
-		print ()
-	elif counter == 1:
-		print (counter, " New airport has been saved to the local storage. It is: ")
-		print ()
 	else:
-		print ("No New Airports have been located.")
+		counter = 0
+		new_airlines = []
+		for flight in airlines:
+			del_fields = ['iata', 'icao', 'phoneNumber', 'active']
+			for field in del_fields:
+				try:
+					flight.pop(field)
+				except KeyError:
+					pass
+			flight_name = flight['fs'] + ' - ' + flight['name']
+			flight['airline'] = flight_name
 
-	if new_airports:
-		for i in new_airports:
-			print(i)
+			if os.path.exists(airlines_path):
+				airlines_data = json.load(open(airlines_path, 'r'))
+				if flight not in airlines_data:
+					airlines_data.append(flight)
+					counter += 1
+					new_airlines.append(flight['airline'])
+				with open(airlines_path, "w") as flights_json:
+					json.dump(airlines_data, flights_json)
+				
+				
+			else:
+				airlines_data = []
+				if flight not in airlines_data:
+					airlines_data.append(flight)
+					counter += 1
+					new_airlines.append(flight['airline'])
+				with open(airlines_path, "w") as flights_json:
+					json.dump(airlines_data, flights_json)
+				
+
+		if counter > 1:
+			print (counter, " New airlines have been saved to the local storage. They are: ")
+			print ()
+		elif counter == 1:
+			print (counter, " New airline has been saved to the local storage. It is: ")
+			print ()
+		else:
+			print ("No New Airlines have been located.")
+
+		if new_airlines:
+			for i in new_airlines:
+				print(i)
 	# # TO READ FROM AIRPORTS FILE
  #    data = json.load(open(path, 'r'))
 
@@ -386,29 +391,48 @@ apiKey = "***"
 flight_stat_url = api_url_generator(host, appID, apiKey)
 os.system('clear')
 
-
-
-
-
-data = requests.get(flight_stat_url).text
-data = json.loads(data)
+if flight_stat_url:
+	data = requests.get(flight_stat_url).text
+	data = json.loads(data)
 
 output(data)
-#data_salvager(data)
+#airlines_data_salvager(data)
 
 
-print ("Demographics")	
-airports_data = json.load(open('Data/airports.json', 'r'))
-countries = []
-count = 0
-for i in airports_data:
-	if i['countryName'] not in countries:
-		countries.append(i['countryName'])
-	if i['regionName'] == 'Africa':
-		count += 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# print ("Demographics")	
+airports_data = json.load(open('Data/airlines.json', 'r'))
+# countries = []
+# count = 0
+# for i in airports_data:
+# 	if i['countryName'] not in countries:
+# 		countries.append(i['countryName'])
+# 	if i['regionName'] == 'Africa':
+# 		count += 1
 print("Total No. of airports collected: ", len(airports_data))
-print("Total No. of unique countries in airports collected: ", len(countries))
-print("Total Airports collected in Africa: ", count)
+# print("Total No. of unique countries in airports collected: ", len(countries))
+# print("Total Airports collected in Africa: ", count)
 
 
 
