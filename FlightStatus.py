@@ -385,8 +385,8 @@ def airlines_data_salvager(data):
 os.system('clear')
 # Creating the API URL 
 host = "https://api.flightstats.com/flex/flightstatus/rest/v2/json/"
-appID = "***"
-apiKey = "***"
+appID = "c0108d04"
+apiKey = "a05ff275a408df68c013da1bc00d4046"
 
 flight_stat_url = api_url_generator(host, appID, apiKey)
 os.system('clear')
