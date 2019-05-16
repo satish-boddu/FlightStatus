@@ -393,6 +393,7 @@ os.system('clear')
 
 if flight_stat_url:
 	data = requests.get(flight_stat_url).text
+	print(data)
 	data = json.loads(data)
 
 output(data)
